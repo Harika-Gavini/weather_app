@@ -34,6 +34,7 @@ class _WeatherScreenState extends State<WeatherScreen> {
   String _cityName = '';
   String _temperature = 'Temperature: --';
   String _weatherCondition = 'Condition: --';
+  List<String> _forecast = [];
 
   void _fetchWeather() {
     final city = _cityController.text;
@@ -46,6 +47,29 @@ class _WeatherScreenState extends State<WeatherScreen> {
       _cityName = city;
       _temperature = 'Temperature: ${temperature}°C';
       _weatherCondition = 'Condition: $weatherCondition';
+    });
+  }
+
+  void _fetchForecast() {
+    final random = Random();
+    if (_temperature == 'Temperature: --') {
+      // Ensure weather is fetched before fetching forecast
+      return;
+    }
+    final currentTemperature = int.parse(_temperature.split(': ')[1].replaceAll('°C', ''));
+    final currentCondition = _weatherCondition.split(': ')[1];
+
+    List<String> forecast = [];
+    forecast.add('Day 1: ${currentTemperature}°C, $currentCondition'); // Match Day 1 with current weather
+    for (int i = 1; i < 7; i++) {
+      final forecastTemperature = random.nextInt(16) + 15; // Random temp for other days
+      final conditions = ['Sunny', 'Cloudy', 'Rainy'];
+      final forecastCondition = conditions[random.nextInt(conditions.length)];
+      forecast.add('Day ${i + 1}: ${forecastTemperature}°C, $forecastCondition');
+    }
+
+    setState(() {
+      _forecast = forecast;
     });
   }
 
@@ -79,7 +103,16 @@ class _WeatherScreenState extends State<WeatherScreen> {
               SizedBox(height: 16.0),
               ElevatedButton(
                 onPressed: _fetchWeather,
-                child: Text('Fetch Weather'),
+                child: Text('Fetch Current Weather'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Theme.of(context).colorScheme.secondary,
+                  foregroundColor: Colors.white,
+                ),
+              ),
+              SizedBox(height: 8.0),
+              ElevatedButton(
+                onPressed: _fetchForecast,
+                child: Text('Fetch 7-Day Forecast'),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Theme.of(context).colorScheme.secondary,
                   foregroundColor: Colors.white,
@@ -98,6 +131,15 @@ class _WeatherScreenState extends State<WeatherScreen> {
                 _weatherCondition,
                 style: TextStyle(fontSize: 18, color: Colors.white),
               ),
+              SizedBox(height: 32.0),
+              Text(
+                '7-Day Forecast:',
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),
+              ),
+              ..._forecast.map((dayForecast) => Text(
+                dayForecast,
+                style: TextStyle(fontSize: 16, color: Colors.white),
+              )).toList(),
             ],
           ),
         ),
