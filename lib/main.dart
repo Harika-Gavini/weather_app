@@ -35,23 +35,17 @@ class _WeatherScreenState extends State<WeatherScreen> {
   void _fetchWeather() {
     final city = _cityController.text;
 
-    // Simulate fetching weather values
-    setState(() {
-      _cityName = city;
-      _temperature = 'Temperature: --'; // Placeholder
-      _weatherCondition = 'Condition: --'; // Placeholder
-    });
-
-    // Generate a random temperature between 15°C and 30°C (not displayed)
+    // Generate a random temperature between 15°C and 30°C
     final random = Random();
     final temperature = random.nextInt(16) + 15; // 15 to 30
     final conditions = ['Sunny', 'Cloudy', 'Rainy'];
     final weatherCondition = conditions[random.nextInt(conditions.length)];
 
-    // Log the simulated values
-    print('City: $city');
-    print('Temperature: ${temperature}°C');
-    print('Condition: $weatherCondition');
+    setState(() {
+      _cityName = city;
+      _temperature = 'Temperature: ${temperature}°C';
+      _weatherCondition = 'Condition: $weatherCondition';
+    });
   }
 
   @override
